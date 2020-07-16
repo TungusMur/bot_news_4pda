@@ -1,3 +1,4 @@
+#Метод для настройки фильтра
 def setting(off_on, message):
     if (message == "/all_news"):
         if (off_on['all'] == 'Вкл'):
