@@ -1,19 +1,23 @@
+# Модуль для работы с TG Bot API
 from aiogram import Bot, Dispatcher, executor, types
 import asyncio
 
-
+# Модуль в котором хранится токен
 import config
+# Модуль для парсинга новостей по ссылке, проверки новезне новости, проверки фильтра
 import parse
+#Модуль настройки фильтра новостей
 import setting_off_on
 
-
+# Объявляем бота
 BOT = Bot(config.token)
+# Объявляем диспетчера, для обработки обновлений
 DP = Dispatcher(BOT)
 
-
+#Флажек для команд /go и /stop
 chek_ready = False
 
-
+#Фильтр
 off_on = {
     'all': "Вкл",
     'phone': "Выкл",
@@ -25,7 +29,7 @@ off_on = {
 }
 
 
-
+# Метод обработки команды /start, выводит привественное сообщение
 @DP.message_handler(commands=['start'])
 async def start_command(message: types.Message):
     global user_id, new_item_id
@@ -40,7 +44,7 @@ async def start_command(message: types.Message):
                                     "\n\n-Чтобы по подробней узнать о всех командах бота введите команду /help.")
 
 
-
+# Метод обработки команды /help, выводит все доступные команды
 @DP.message_handler(commands=['help'])
 async def help_command(message):
     global user_id
@@ -51,7 +55,7 @@ async def help_command(message):
                                    "\n\n\u2022/stop - команда для приостановления потока новостей")
 
 
-
+# Метод обработки команды /go, начинает подачу новостей пользователю
 @DP.message_handler(commands=['go'])
 async def go_command(message):
     global user_id, chek_ready, off_on
@@ -73,7 +77,7 @@ async def go_command(message):
         DP.loop.create_task(renewal(150))
 
 
-
+# Метод обработки команды /go, приостанавливает подачу новостей пользователю
 @DP.message_handler(commands=['stop'])
 async def stop_command(message):
     global user_id, chek_ready
@@ -85,7 +89,7 @@ async def stop_command(message):
         await BOT.send_message(user_id, "У вас итак приостановлен поток получения новостей.")
 
 
-
+# Метод обработки команды /setting, показывает стату фильтра и команды для настройки
 @DP.message_handler(commands=['setting'])
 async def setting_command(message):
     global user_id, off_on
@@ -108,7 +112,7 @@ async def setting_command(message):
                                         "\n\n- После настройки фильтра не забудьте прописать команду /go")
 
 
-
+# Метод обработки команд таких как /all_news /phone_news /laptop_news /audio_news /display_news /pc_news /games_news, настройка фильтра
 @DP.message_handler(content_types=['text'])
 async def text(message):
     global off_on, chek_ready
@@ -135,7 +139,7 @@ async def text(message):
                                             "\n\n- После настройки фильтра не забудьте прописать команду /go")
 
 
-
+# Метод для проверки новой новости на сайте, срабатывает раз в 2 минуты 30 секунд
 async def renewal(time):
     global chek_ready
     while chek_ready:
@@ -149,6 +153,6 @@ async def renewal(time):
                                     disable_notification = True)
 
 
-
+# Запуск лонгполинга
 if __name__ == '__main__':
     executor.start_polling(DP, skip_updates=True)
