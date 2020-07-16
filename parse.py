@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as BS
 
+# Метод для получения информации о новости 
 def get_inf(URL):
         global item_id
         HEADERS = {
@@ -22,7 +23,7 @@ def get_inf(URL):
         print(item_id + 'новый id')
         return [img, header, text, url, item_id]
 
-
+# Метод для проверки новой новости на сайте 
 def chek(new_item_id, news):
     file = open('name_id\\' + news + '_id.txt', 'r')
     old_item_id = file.readline()
@@ -37,7 +38,7 @@ def chek(new_item_id, news):
         file.close()
         return True
 
-
+# Метод для просмотра фильтра
 def chek_off_on(news, status):
     if ((news == 'all') and (status == 'Вкл')):
         URL = 'https://4pda.ru/'
